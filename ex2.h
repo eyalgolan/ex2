@@ -13,6 +13,8 @@
 #include "unordered_map"
 #include "iterator"
 #include "list"
+#include "fstream"
+#include <typeinfo>
 
 using namespace std;
 
@@ -40,13 +42,15 @@ template <class T> class CacheManager {
 
   }
   void insert(string key, T obj) {
-    if(isInCache(key)) {
+    if(isInCache(key)) {                                                        //already in cache
       updatePriority(key, obj);
     }
-    else{
-      if(sizeIsOk()) {
+    else{                                                                       //not in cache
+      if(sizeIsOk()) {                                                          //cache is smaller then limit -> new item
         list<string>::iterator order = orderKeys.begin();
         cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key, pair<T, list<string>::iterator>(obj, order)));
+        string filename = "../" + key + typeid(obj).name() + ".txt";
+        fstream out_file {filename,ios::out | ios::binary};                     //write to file
       }
       else {
         if(isInFile(key)) {
