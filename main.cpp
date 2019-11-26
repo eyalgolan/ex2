@@ -53,80 +53,80 @@ int main() {
         cout << e << endl;
     }
 
-
-    my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
-
-    try {
-        Student return_obj = my_cache.get("0"); //not in cache but in filesystem
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-    try {
-        auto return_obj2 = my_cache.get("1");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-    try {
-        auto return_obj3 = my_cache.get("2");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-    try {
-        auto return_obj4 = my_cache.get("3");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-
-    CacheManager<Employee> my_2nd_cache(5);
-    try {
-        my_2nd_cache.insert("0", Employee("emp1"));
-        my_2nd_cache.insert("1", Employee("emp2"));
-        my_2nd_cache.insert("2",Employee("emp3"));
-        my_2nd_cache.insert("3", Employee("emp4"));
-    } catch  (const char * e) {
-        cout << e << endl;
-    }
-
-    try {
-        auto emp3 = my_2nd_cache.get("2");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-    try {
-        auto error_obj = my_cache.get("4");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-
-    try {
-        my_2nd_cache.insert("emp_key", Employee("emp5"));
-        my_2nd_cache.insert("hello", Employee("emp6"));
-        my_2nd_cache.insert("bye", Employee("emp7"));
-        my_2nd_cache.insert("some_key", Employee("emp8"));
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-
-    try {
-        auto emp1 = my_2nd_cache.get("0");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-
-
-    try {
-        auto emp5 = my_2nd_cache.get("emp_key");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-    try {
-        auto emp6 = my_2nd_cache.get("hello");
-    } catch (const char * e) {
-        cout << e << endl;
-    }
-
-
-    //*** ---- I will also perform a check that the files have indeed
-    // been created in the same directory as the program-------------***
+//
+//    my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
+//
+//    try {
+//        Student return_obj = my_cache.get("0"); //not in cache but in filesystem
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//    try {
+//        auto return_obj2 = my_cache.get("1");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//    try {
+//        auto return_obj3 = my_cache.get("2");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//    try {
+//        auto return_obj4 = my_cache.get("3");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//
+//    CacheManager<Employee> my_2nd_cache(5);
+//    try {
+//        my_2nd_cache.insert("0", Employee("emp1"));
+//        my_2nd_cache.insert("1", Employee("emp2"));
+//        my_2nd_cache.insert("2",Employee("emp3"));
+//        my_2nd_cache.insert("3", Employee("emp4"));
+//    } catch  (const char * e) {
+//        cout << e << endl;
+//    }
+//
+//    try {
+//        auto emp3 = my_2nd_cache.get("2");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//    try {
+//        auto error_obj = my_cache.get("4");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//
+//    try {
+//        my_2nd_cache.insert("emp_key", Employee("emp5"));
+//        my_2nd_cache.insert("hello", Employee("emp6"));
+//        my_2nd_cache.insert("bye", Employee("emp7"));
+//        my_2nd_cache.insert("some_key", Employee("emp8"));
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//
+//    try {
+//        auto emp1 = my_2nd_cache.get("0");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//
+//
+//    try {
+//        auto emp5 = my_2nd_cache.get("emp_key");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//    try {
+//        auto emp6 = my_2nd_cache.get("hello");
+//    } catch (const char * e) {
+//        cout << e << endl;
+//    }
+//
+//
+//    //*** ---- I will also perform a check that the files have indeed
+//    // been created in the same directory as the program-------------***
     return 0;
 }

@@ -23,15 +23,45 @@ template <class T> class CacheManager {
   list<string> orderKeys;
 
  public:
+  bool isInCache(string key) {
+    return (this->cacheMap.find(key) != this->cacheMap.end());
+  }
+  bool sizeIsOk() {
+    return (cacheMap.size() + 1 < size);
+  }
+  void updatePriority(string key, T obj) {
+    orderKeys.remove(key);
+    orderKeys.push_front(key);
+    this->cacheMap.erase(key);
+    list<string>::iterator order = orderKeys.begin();
+    cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key, pair<T, list<string>::iterator>(obj, order)));
+  }
+  bool isInFile(string key) {
+
+  }
   void insert(string key, T obj) {
+    if(isInCache(key)) {
+      updatePriority(key, obj);
+    }
+    else{
+      if(sizeIsOk()) {
+        list<string>::iterator order = orderKeys.begin();
+        cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key, pair<T, list<string>::iterator>(obj, order)));
+      }
+      else {
+        if(isInFile(key)) {
 
+        }
+      }
+    }
   }
-  T get(string key) {
-
-  }
-  void foreach() {
-
-  }
+//  T get(string key) {
+//
+//  }
+//
+//  void foreach() {
+//
+//  }
 
   CacheManager (int capacity) {
     this->size = capacity;
