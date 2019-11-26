@@ -25,10 +25,10 @@ template <class T> class CacheManager {
   list<string> orderKeys;
 
  public:
-  bool isInCache(string key) {
+  bool isInCache(string key) {                                                  //check if item in cache
     return (this->cacheMap.find(key) != this->cacheMap.end());
   }
-  bool sizeIsOk() {
+  bool sizeIsOk() {                                                             //check if cache not full
     return (cacheMap.size() + 1 > size);
   }
   void updatePriority(string key, T obj) {
@@ -79,14 +79,15 @@ template <class T> class CacheManager {
   template <class p>
   void foreach(p func) {
     if(cacheMap.size() != 0) {
-      for (typename std::unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
+      for (typename std::unordered_map<string, pair<T,
+          list<string>::iterator>>::iterator it = cacheMap.begin();
            it != cacheMap.end(); ++it) {
         func(it);
       }
     }
   }
 
-  CacheManager (int capacity) {
+  CacheManager (int capacity) {                                                 //CacheManager CTOR
     this->size = capacity;
   }
 };
