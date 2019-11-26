@@ -33,6 +33,7 @@ template <class T> class CacheManager {
     T obj = it->second.first;
     string filename = key + typeid(obj).name() + ".txt";
     ifstream ifile(filename);
+    bool isExist = (bool)ifile;
     return (bool)ifile;
   }
   bool sizeIsOk() {                                                             //check if cache not full
@@ -65,7 +66,8 @@ template <class T> class CacheManager {
     orderKeys.remove(key);                                                      //erase it from LRU list
   }
   T getObjFromCache(string key) {
-    return this->cacheMap.find(key);
+    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.find(key);
+    return it->second.first;
   }
   T getObjFromFIle(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
@@ -116,7 +118,7 @@ template <class T> class CacheManager {
       for (typename unordered_map<string, pair<T,
           list<string>::iterator>>::iterator it = cacheMap.begin();
            it != cacheMap.end(); ++it) {
-        func(it);
+        func(it->second.first);
       }
     }
   }
