@@ -43,6 +43,7 @@ template <class T> class CacheManager {
     string filename = "../" + key + typeid(obj).name() + ".txt";                //build filename
     fstream out_file {filename,ios::out | ios::binary};                         //create file
     out_file.write((char *)&obj, sizeof(obj));                                  //write data to file
+    out_file.close();                                                           //close the file
   }
   void createItem(string key, T obj) {
     orderKeys.push_front(key);                                                  //push key to start of LRU list
@@ -75,9 +76,14 @@ template <class T> class CacheManager {
 //
 //  }
 //
-
-  void foreach() {
-
+  template <class p>
+  void foreach(p func) {
+    if(cacheMap.size() != 0) {
+      for (typename std::unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
+           it != cacheMap.end(); ++it) {
+        func(it);
+      }
+    }
   }
 
   CacheManager (int capacity) {
