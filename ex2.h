@@ -28,8 +28,15 @@ template <class T> class CacheManager {
   bool isInCache(string key) {                                                  //check if item in cache
     return (this->cacheMap.find(key) != this->cacheMap.end());
   }
+  bool isInFile(string key) {
+    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
+    T obj = it->second.first;
+    string filename = key + typeid(obj).name() + ".txt";
+    ifstream ifile(filename);
+    return (bool)ifile;
+  }
   bool sizeIsOk() {                                                             //check if cache not full
-    return (cacheMap.size() + 1 > size);
+    return (cacheMap.size() + 1 <= size);
   }
   void updatePriority(string key, T obj) {
     orderKeys.remove(key);                                                      //remove key from LRU list
@@ -57,6 +64,21 @@ template <class T> class CacheManager {
     cacheMap.erase(key);                                                        //erase it from cache
     orderKeys.remove(key);                                                      //erase it from LRU list
   }
+  T getObjFromCache(string key) {
+    return this->cacheMap.find(key);
+  }
+  T getObjFromFIle(string key) {
+    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
+    T obj = it->second.first;
+    string filename = key + typeid(obj).name() + ".txt";
+
+    ifstream ifile;
+    ifile.open(filename, ios::binary);
+    string line;
+    getline(ifile, line);
+    cout << line << endl;
+  }
+ public:
   void insert(string key, T obj) {
     if(isInCache(key)) {                                                        //if already in cache -> only need to update priority
       updatePriority(key, obj);                                                 //update priority
@@ -72,14 +94,26 @@ template <class T> class CacheManager {
       }
     }
   }
-//  T get(string key) {
-//
-//  }
-//
+  T get(string key) {
+    if(isInCache(key)) {
+      T obj = getObjFromCache(key);
+      updatePriority(key, obj);
+      return obj;
+    }
+    else if(isInFile(key)) {
+      T obj = getObjFromFIle(key);
+      updatePriority(key, obj);
+      return obj;
+    }
+    else {
+      throw "an error";
+    }
+  }
+
   template <class p>
   void foreach(p func) {
     if(cacheMap.size() != 0) {
-      for (typename std::unordered_map<string, pair<T,
+      for (typename unordered_map<string, pair<T,
           list<string>::iterator>>::iterator it = cacheMap.begin();
            it != cacheMap.end(); ++it) {
         func(it);
