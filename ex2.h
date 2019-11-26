@@ -29,7 +29,7 @@ template <class T> class CacheManager {
     return (this->cacheMap.find(key) != this->cacheMap.end());
   }
   bool sizeIsOk() {
-    return (cacheMap.size() + 1 < size);
+    return (cacheMap.size() + 1 > size);
   }
   void updatePriority(string key, T obj) {
     orderKeys.remove(key);
@@ -38,24 +38,34 @@ template <class T> class CacheManager {
     list<string>::iterator order = orderKeys.begin();
     cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key, pair<T, list<string>::iterator>(obj, order)));
   }
-  bool isInFile(string key) {
-
+  void writeToFile(string key, T obj) {
+    string filename = "../" + key + typeid(obj).name() + ".txt";
+    fstream out_file {filename,ios::out | ios::binary};                         //write to file BINARY
+    out_file.write((char *)&obj, sizeof(obj));
+  }
+  void createItem(string key, T obj) {
+    orderKeys.push_front(key);
+    list<string>::iterator order = orderKeys.begin();
+    cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key, pair<T, list<string>::iterator>(obj, order)));
+    writeToFile(key, obj);                                                      //write to file BINARY
+  }
+  void removeLastFromCache() {
+    string key = orderKeys.back();
+    cacheMap.erase(key);
+    orderKeys.remove(key);
   }
   void insert(string key, T obj) {
-    if(isInCache(key)) {                                                        //already in cache
+    if(isInCache(key)) {                                                        //if already in cache -> only need to update priority
       updatePriority(key, obj);
     }
-    else{                                                                       //not in cache
-      if(sizeIsOk()) {                                                          //cache is smaller then limit -> new item
-        list<string>::iterator order = orderKeys.begin();
-        cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key, pair<T, list<string>::iterator>(obj, order)));
-        string filename = "../" + key + typeid(obj).name() + ".txt";
-        fstream out_file {filename,ios::out | ios::binary};                     //write to file
+    else{                                                                       //if not in cache
+      if(sizeIsOk()) {                                                          //and if cache is smaller then limit -> insert new item
+        createItem(key, obj);
       }
-      else {
-        if(isInFile(key)) {
-
-        }
+      else {                                                                    //if not in cache
+        writeToFile(key, obj);                                                  //write to file (even if in file, override)
+        updatePriority(key, obj);                                               //update priorities
+        removeLastFromCache();                                                  //remove last from cache
       }
     }
   }
