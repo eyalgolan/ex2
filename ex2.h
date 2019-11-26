@@ -73,10 +73,10 @@ template <class T> class CacheManager {
     string filename = key + typeid(obj).name() + ".txt";
 
     ifstream ifile;
-    ifile.open(filename, ios::binary);
-    string line;
-    getline(ifile, line);
-    cout << line << endl;
+    ifile.open(filename, ios::in | ios::binary);
+    T retrievedObj;
+    ifile.read((char *)&retrievedObj, sizeof(retrievedObj));
+    return retrievedObj;
   }
  public:
   void insert(string key, T obj) {
