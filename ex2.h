@@ -31,10 +31,14 @@ template <class T> class CacheManager {
   bool isInFile(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
     T obj = it->second.first;
-    string filename = key + typeid(obj).name() + ".txt";
-    ifstream ifile(filename);
-    bool isExist = (bool)ifile;
-    return (bool)ifile;
+    string filename = "../" + key + typeid(obj).name() + ".txt";
+    ifstream ifile;
+    ifile.open(filename, ios::in | ios::binary);
+    if(ifile.fail()) {
+      return false;
+    }
+    ifile.close();
+    return true;
   }
   bool sizeIsOk() {                                                             //check if cache not full
     return (cacheMap.size() + 1 <= size);
@@ -48,7 +52,7 @@ template <class T> class CacheManager {
         pair<T, list<string>::iterator>(obj, order)));                          //enter to cache, with pointer to start of LRU list
   }
   void writeToFile(string key, T obj) {                                         //write to file BINARY
-    string filename = "../" + key + typeid(obj).name() + ".txt";                //build filename
+    string filename = "../" + key + typeid(obj).name();                         //build filename
     fstream out_file {filename,ios::out | ios::binary};                         //create file
     out_file.write((char *)&obj, sizeof(obj));                                  //write data to file
     out_file.close();                                                           //close the file
@@ -72,12 +76,13 @@ template <class T> class CacheManager {
   T getObjFromFIle(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
     T obj = it->second.first;
-    string filename = key + typeid(obj).name() + ".txt";
+    string filename = "../" + key + typeid(obj).name();
 
     ifstream ifile;
     ifile.open(filename, ios::in | ios::binary);
     T retrievedObj;
     ifile.read((char *)&retrievedObj, sizeof(retrievedObj));
+    ifile.close();
     return retrievedObj;
   }
  public:
@@ -105,6 +110,7 @@ template <class T> class CacheManager {
     else if(isInFile(key)) {
       T obj = getObjFromFIle(key);
       updatePriority(key, obj);
+      removeLastFromCache();
       return obj;
     }
     else {
