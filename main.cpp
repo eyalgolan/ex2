@@ -65,6 +65,7 @@ int main() {
 
     try {
         Student return_obj = my_cache.get("0"); //not in cache but in filesystem
+        my_cache.foreach([](Student &s) { s.print(); }); //prints all students in cache
     } catch (const char *e) {
         cout << e << endl;
     }
