@@ -31,7 +31,7 @@ template <class T> class CacheManager {
   bool isInFile(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
     T obj = it->second.first;
-    string filename = "../" + key + typeid(obj).name() + ".txt";
+    string filename = "../" + key + typeid(obj).name();
     ifstream ifile;
     ifile.open(filename, ios::in | ios::binary);
     if(ifile.fail()) {
@@ -54,8 +54,13 @@ template <class T> class CacheManager {
   void writeToFile(string key, T obj) {                                         //write to file BINARY
     string filename = "../" + key + typeid(obj).name();                         //build filename
     fstream out_file {filename,ios::out | ios::binary};                         //create file
-    out_file.write((char *)&obj, sizeof(obj));                                  //write data to file
-    out_file.close();                                                           //close the file
+    if(!out_file) {                                                             //check if file not created properly
+      throw "an error";
+    }
+    else {
+      out_file.write((char *)&obj, sizeof(obj));                                //write data to file
+      out_file.close();                                                         //close the file
+    }
   }
   void createItem(string key, T obj) {
     orderKeys.push_front(key);                                                  //push key to start of LRU list
@@ -73,7 +78,7 @@ template <class T> class CacheManager {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.find(key);
     return it->second.first;
   }
-  T getObjFromFIle(string key) {
+  T getObjFromFile(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
     T obj = it->second.first;
     string filename = "../" + key + typeid(obj).name();
@@ -108,7 +113,7 @@ template <class T> class CacheManager {
       return obj;
     }
     else if(isInFile(key)) {
-      T obj = getObjFromFIle(key);
+      T obj = getObjFromFile(key);
       updatePriority(key, obj);
       removeLastFromCache();
       return obj;
@@ -121,11 +126,19 @@ template <class T> class CacheManager {
   template <class p>
   void foreach(p func) {
     if(cacheMap.size() != 0) {
-      for (typename unordered_map<string, pair<T,
-          list<string>::iterator>>::iterator it = cacheMap.begin();
-           it != cacheMap.end(); ++it) {
-        func(it->second.first);
+      unsigned long lruSize = this->orderKeys.size();
+      typename list<string>::iterator it = this->orderKeys.begin();
+      for(unsigned long i=0 ; i< lruSize ; i++) {
+        T obj = getObjFromCache(*it);
+        func(obj);
+        it++;
       }
+
+//      for (typename unordered_map<string, pair<T,
+//          list<string>::iterator>>::iterator it = cacheMap.begin();
+//           it != cacheMap.end(); ++it) {
+//        func(it->second.first);
+//      }
     }
   }
 
