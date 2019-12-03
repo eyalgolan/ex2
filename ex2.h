@@ -25,11 +25,14 @@ template <class T> class CacheManager {
   list<string> orderKeys;
 
  public:
+
   bool isInCache(string key) {                                                  //check if item in cache
     return (this->cacheMap.find(key) != this->cacheMap.end());
   }
+
   bool isInFile(string key) {
-    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
+    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it
+        = cacheMap.begin();
     T obj = it->second.first;
     string filename = "../" + key + typeid(obj).name();
     ifstream ifile;
@@ -40,9 +43,11 @@ template <class T> class CacheManager {
     ifile.close();
     return true;
   }
+
   bool sizeIsOk() {                                                             //check if cache not full
     return (cacheMap.size() + 1 <= size);
   }
+
   void updatePriority(string key, T obj) {
     orderKeys.remove(key);                                                      //remove key from LRU list
     orderKeys.push_front(key);                                                  //push key to start of LRU list
@@ -51,6 +56,7 @@ template <class T> class CacheManager {
     cacheMap.insert(pair<string, pair<T, list<string>::iterator>>(key,
         pair<T, list<string>::iterator>(obj, order)));                          //enter to cache, with pointer to start of LRU list
   }
+
   void writeToFile(string key, T obj) {                                         //write to file BINARY
     string filename = "../" + key + typeid(obj).name();                         //build filename
     fstream out_file {filename,ios::out | ios::binary};                         //create file
@@ -62,6 +68,7 @@ template <class T> class CacheManager {
       out_file.close();                                                         //close the file
     }
   }
+
   void createItem(string key, T obj) {
     orderKeys.push_front(key);                                                  //push key to start of LRU list
     list<string>::iterator order = orderKeys.begin();
@@ -69,15 +76,18 @@ template <class T> class CacheManager {
         pair<T, list<string>::iterator>(obj, order)));                          //enter to cache
     writeToFile(key, obj);                                                      //write to file BINARY
   }
+
   void removeLastFromCache() {
     string key = orderKeys.back();                                              //get key of last member in LRU
     cacheMap.erase(key);                                                        //erase it from cache
     orderKeys.remove(key);                                                      //erase it from LRU list
   }
+
   T getObjFromCache(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.find(key);
     return it->second.first;
   }
+
   T getObjFromFile(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
     T obj = it->second.first;
@@ -90,10 +100,13 @@ template <class T> class CacheManager {
     ifile.close();
     return retrievedObj;
   }
+
  public:
+
   void insert(string key, T obj) {
     if(isInCache(key)) {                                                        //if already in cache -> only need to update priority
       updatePriority(key, obj);                                                 //update priority
+      writeToFile(key, obj);                                                    //update file (obj might be different)
     }
     else{                                                                       //if not in cache
       if(sizeIsOk()) {                                                          //and if cache is smaller then limit -> insert new item
@@ -133,12 +146,6 @@ template <class T> class CacheManager {
         func(obj);
         it++;
       }
-
-//      for (typename unordered_map<string, pair<T,
-//          list<string>::iterator>>::iterator it = cacheMap.begin();
-//           it != cacheMap.end(); ++it) {
-//        func(it->second.first);
-//      }
     }
   }
 

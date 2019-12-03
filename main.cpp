@@ -40,10 +40,37 @@ public:
 };
 const string Employee::class_name = "EmployeeClass";
 
+// another testing class
+
+using namespace std;
+class Teacher
+{
+    const char* name;
+    const char* course;
+    int year;
+public:
+    static const string class_name; //every class will have a class static name called: class_name
+    Teacher(){}; //every class will have a default constructor
+    Teacher(const char* _name, const char* _course, int _year): name(_name),
+    course(_course), year(_year){};
+    void file() {
+        CacheManager<Teacher> m(1);
+        m.insert(name, *this);
+        m.foreach([](Teacher &s){s.print();});
+    }
+    void print() {
+        cout<<"Teacher Object: "<<name<<", "<<course<<", "<<year<<endl;
+    };
+    ~Teacher(){};
+};
+
+const string Teacher::class_name = "TeacherClass";
+
 
 int main() {
     CacheManager<Student> my_cache(3);
-  try {
+
+    try {
         my_cache.insert("0", Student(0,22,"student1"));
         my_cache.insert("1", Student(1,23,"student2"));
         my_cache.insert("2", Student(2,25,"student3"));
@@ -52,41 +79,28 @@ int main() {
         cout << e << endl;
     }
 
-
     my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
-    cout<<"\n";
-
 
     try {
-        Student return_obj = my_cache.get("0"); //not in cache but in filesystem
+        Student return_obj = my_cache.get("0");//not in cache but in filesystem
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
-  cout<<"\n";
-
-  try {
+    try {
         auto return_obj2 = my_cache.get("1");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
-  cout<<"\n";
-  try {
+    try {
         auto return_obj3 = my_cache.get("2");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
-  cout<<"\n";
-
-  try {
+    try {
         auto return_obj4 = my_cache.get("3");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_cache.foreach([](Student& s){s.print();}); //prints all students in cache
-  cout<<"\n";
 
     CacheManager<Employee> my_2nd_cache(5);
     try {
@@ -97,23 +111,17 @@ int main() {
     } catch  (const char * e) {
         cout << e << endl;
     }
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
-  try {
+
+    try {
         auto emp3 = my_2nd_cache.get("2");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
-
-  try {
+    try {
         auto error_obj = my_cache.get("4");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
 
     try {
         my_2nd_cache.insert("emp_key", Employee("emp5"));
@@ -123,8 +131,6 @@ int main() {
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
 
     try {
         auto emp1 = my_2nd_cache.get("0");
@@ -132,26 +138,212 @@ int main() {
         cout << e << endl;
     }
 
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
 
     try {
         auto emp5 = my_2nd_cache.get("emp_key");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
-
     try {
         auto emp6 = my_2nd_cache.get("hello");
     } catch (const char * e) {
         cout << e << endl;
     }
-  my_2nd_cache.foreach([](Employee& g){g.print();}); //prints all students in cache
-  cout<<"\n";
+
 
     //*** ---- I will also perform a check that the files have indeed
     // been created in the same directory as the program-------------***
+
+
+    // another tests
+    cout << endl;
+    cout << "More tests from here." << endl;
+    CacheManager<Teacher> teacherCache(5);
+
+    // checks foreach for empty cache, shouldn't print anything
+    teacherCache.foreach([](Teacher& s){s.print();}); //prints all students in cache
+    cout << endl;
+
+    // checks get and foreach when cache is not full
+    try {
+        teacherCache.insert("0", Teacher("Reznikov", "LinearAlgebra", 1));
+        Teacher return_obj = teacherCache.get("0");
+        return_obj.print();
+        //Teacher Object: Reznikov, LinearAlgebra, 1
+        cout << endl;
+        //checks get twice on the same key
+        Teacher return_obj2 = teacherCache.get("0");
+        return_obj2.print();
+        //Teacher Object: Reznikov, LinearAlgebra, 1
+        cout << endl;
+        teacherCache.foreach([](Teacher& s){s.print();}); //prints all students in cache
+        cout << endl;
+        //Teacher Object: Reznikov, LinearAlgebra, 1
+    } catch  (const char * e) {
+        cout << e << endl;
+    }
+
+
+    try {
+        teacherCache.insert("0", Teacher("Reznikov", "LinearAlgebra", 1));
+        teacherCache.insert("1", Teacher("Doron", "Infi", 1));
+        teacherCache.insert("2", Teacher("Erez", "Algebraic structures", 2));
+        teacherCache.insert("3", Teacher("Arye", "Discrete mathematics", 1));
+        teacherCache.insert("4", Teacher("Noa", "Introduction to CS", 1));
+        teacherCache.insert("5", Teacher("Adi", "LinearAlgebra", 1));
+        teacherCache.insert("6", Teacher("Tsvi Kopelowitz", "Algorithms1", 2));
+    } catch  (const char * e) {
+        cout << e << endl;
+    }
+
+    teacherCache.foreach([](Teacher& s){s.print();}); //prints all students in cache
+    cout << endl;
+
+    //Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+    //Teacher Object: Adi, LinearAlgebra, 1
+    //Teacher Object: Noa, Introduction to CS, 1
+    //Teacher Object: Arye, Discrete mathematics, 1
+    //Teacher Object: Erez, Algebraic structures, 2
+
+
+    try {
+        Teacher return_obj = teacherCache.get("0");//not in cache but in filesystem
+        return_obj.print();
+        cout << endl;
+        //Teacher Object: Reznikov, LinearAlgebra, 1
+    } catch (const char * e) {
+        cout << e << endl;
+    }
+
+    teacherCache.foreach([](Teacher& s){s.print();}); //prints all students in cache
+    cout << endl;
+
+    //Teacher Object: Reznikov, LinearAlgebra, 1
+    //Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+    //Teacher Object: Adi, LinearAlgebra, 1
+    //Teacher Object: Noa, Introduction to CS, 1
+    //Teacher Object: Arye, Discrete mathematics, 1
+
+
+    try {
+        auto error_obj2 = teacherCache.get("7"); // not in both, throwing the
+        //error string
+    } catch (const char * e) {
+        cout << e << endl;
+        cout << endl;
+    }
+    try {
+        auto return_obj3 = teacherCache.get("5"); // in cache
+        return_obj3.print();
+        cout << endl;
+        //Teacher Object: Adi, LinearAlgebra, 1
+    } catch (const char * e) {
+        cout << e << endl;
+    }
+    try {
+        auto return_obj4 = teacherCache.get("4"); // in cache
+        return_obj4.print();
+        cout << endl;
+        //Teacher Object: Noa, Introduction to CS, 1
+    } catch (const char * e) {
+        cout << e << endl;
+    }
+
+    try {
+        teacherCache.insert("0", Teacher("Plutkin", "LinearAlgebra", 1));
+        teacherCache.foreach([](Teacher& s){s.print();}); //prints all students in cache
+        cout << endl;
+
+        //Teacher Object: Plutkin, LinearAlgebra, 1
+        //Teacher Object: Noa, Introduction to CS, 1
+        //Teacher Object: Adi, LinearAlgebra, 1
+        //Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+        //Teacher Object: Arye, Discrete mathematics, 1
+
+        // Filling the cache so Plutkin will be only in file
+
+        teacherCache.insert("2", Teacher("Erez", "Algebraic structures", 2));
+        teacherCache.insert("3", Teacher("Arye", "Discrete mathematics", 1));
+        teacherCache.insert("4", Teacher("Noa", "CS Introduction", 1));
+        teacherCache.insert("5", Teacher("Adi", "LinearAlgebra", 1));
+        teacherCache.insert("6", Teacher("Tsvi Kopelowitz", "Algorithms1", 2));
+
+        teacherCache.foreach([](Teacher& s){s.print();}); //prints all students in cache
+        cout << endl;
+
+        //Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+        //Teacher Object: Adi, LinearAlgebra, 1
+        //Teacher Object: Noa, CS Introduction, 1
+        //Teacher Object: Arye, Discrete mathematics, 1
+        //Teacher Object: Erez, Algebraic structures, 2
+
+        auto return_obj = teacherCache.get("0"); // checks if updated in file
+        return_obj.print();
+        cout << endl;
+        //Teacher Object: Plutkin, LinearAlgebra, 1
+    } catch  (const char * e) {
+        cout << e << endl;
+    }
+    //prints all students in cache and open new file with name key
+    // make sure that another 5 files have been created with name as key
+
+    teacherCache.foreach([](Teacher& s){s.file();});
+    //Teacher Object: Plutkin, LinearAlgebra, 1
+    //Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+    //Teacher Object: Adi, LinearAlgebra, 1
+    //Teacher Object: Noa, CS Introduction, 1
+    //Teacher Object: Arye, Discrete mathematics, 1
+    cout << endl;
+
     return 0;
 }
+
+/* output
+More tests from here.
+
+Teacher Object: Reznikov, LinearAlgebra, 1
+
+Teacher Object: Reznikov, LinearAlgebra, 1
+
+Teacher Object: Reznikov, LinearAlgebra, 1
+
+Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+Teacher Object: Adi, LinearAlgebra, 1
+Teacher Object: Noa, Introduction to CS, 1
+Teacher Object: Arye, Discrete mathematics, 1
+Teacher Object: Erez, Algebraic structures, 2
+
+Teacher Object: Reznikov, LinearAlgebra, 1
+
+Teacher Object: Reznikov, LinearAlgebra, 1
+Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+Teacher Object: Adi, LinearAlgebra, 1
+Teacher Object: Noa, Introduction to CS, 1
+Teacher Object: Arye, Discrete mathematics, 1
+
+an error
+
+Teacher Object: Adi, LinearAlgebra, 1
+
+Teacher Object: Noa, Introduction to CS, 1
+
+Teacher Object: Plutkin, LinearAlgebra, 1
+Teacher Object: Noa, Introduction to CS, 1
+Teacher Object: Adi, LinearAlgebra, 1
+Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+Teacher Object: Arye, Discrete mathematics, 1
+
+Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+Teacher Object: Adi, LinearAlgebra, 1
+Teacher Object: Noa, CS Introduction, 1
+Teacher Object: Arye, Discrete mathematics, 1
+Teacher Object: Erez, Algebraic structures, 2
+
+Teacher Object: Plutkin, LinearAlgebra, 1
+
+Teacher Object: Plutkin, LinearAlgebra, 1
+Teacher Object: Tsvi Kopelowitz, Algorithms1, 2
+Teacher Object: Adi, LinearAlgebra, 1
+Teacher Object: Noa, CS Introduction, 1
+Teacher Object: Arye, Discrete mathematics, 1
+ */
