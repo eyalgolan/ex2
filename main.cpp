@@ -9,17 +9,17 @@ using namespace std;
 // Testing Class
 class Student
 {
-    int id;
-    int value;
-    const char* data;
-public:
-    static const string class_name; //every class will have a class static name called: class_name
-    Student(int _key, int _value, const char* _data): id(_key), value(_value), data(_data) {}
-    Student() {}; //every class will have a default constructor
-    void print() {
-        cout<<"Student Object: "<<id<<", "<<value<<", "<<data<<endl;
-    };
-    ~Student(){};
+  int id;
+  int value;
+  const char* data;
+ public:
+  static const string class_name; //every class will have a class static name called: class_name
+  Student(int _key, int _value, const char* _data): id(_key), value(_value), data(_data) {}
+  Student() {}; //every class will have a default constructor
+  void print() {
+      cout<<"Student Object: "<<id<<", "<<value<<", "<<data<<endl;
+  };
+  ~Student(){};
 
 };
 const string Student::class_name = "StudentClass";
@@ -27,15 +27,15 @@ const string Student::class_name = "StudentClass";
 using namespace std;
 class Employee
 {
-    const char* name;
-public:
-    static const string class_name; //every class will have a class static name called: class_name
-    Employee(const char* _name): name(_name) {};
-    Employee(){}; //every class will have a default constructor
-    void print() {
-        cout<<"Employee Object: "<<name<<endl;
-    };
-    ~Employee(){};
+  const char* name;
+ public:
+  static const string class_name; //every class will have a class static name called: class_name
+  Employee(const char* _name): name(_name) {};
+  Employee(){}; //every class will have a default constructor
+  void print() {
+      cout<<"Employee Object: "<<name<<endl;
+  };
+  ~Employee(){};
 
 };
 const string Employee::class_name = "EmployeeClass";
@@ -45,23 +45,23 @@ const string Employee::class_name = "EmployeeClass";
 using namespace std;
 class Teacher
 {
-    const char* name;
-    const char* course;
-    int year;
-public:
-    static const string class_name; //every class will have a class static name called: class_name
-    Teacher(){}; //every class will have a default constructor
-    Teacher(const char* _name, const char* _course, int _year): name(_name),
-    course(_course), year(_year){};
-    void file() {
-        CacheManager<Teacher> m(1);
-        m.insert(name, *this);
-        m.foreach([](Teacher &s){s.print();});
-    }
-    void print() {
-        cout<<"Teacher Object: "<<name<<", "<<course<<", "<<year<<endl;
-    };
-    ~Teacher(){};
+  const char* name;
+  const char* course;
+  int year;
+ public:
+  static const string class_name; //every class will have a class static name called: class_name
+  Teacher(){}; //every class will have a default constructor
+  Teacher(const char* _name, const char* _course, int _year): name(_name),
+                                                              course(_course), year(_year){};
+  void file() {
+      CacheManager<Teacher> m(1);
+      m.insert(name, *this);
+      m.foreach([](Teacher &s){s.print();});
+  }
+  void print() {
+      cout<<"Teacher Object: "<<name<<", "<<course<<", "<<year<<endl;
+  };
+  ~Teacher(){};
 };
 
 const string Teacher::class_name = "TeacherClass";

@@ -21,7 +21,7 @@ using namespace std;
 template <class T> class CacheManager {
  private:
   unordered_map<string, pair<T, list<string>::iterator>> cacheMap;
-  int size;
+  unsigned long size;
   list<string> orderKeys;
 
  public:
@@ -34,7 +34,7 @@ template <class T> class CacheManager {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it
         = cacheMap.begin();
     T obj = it->second.first;
-    string filename = "../" + key + typeid(obj).name();
+    string filename = "../" + key + obj.class_name;
     ifstream ifile;
     ifile.open(filename, ios::in | ios::binary);
     if(ifile.fail()) {
@@ -58,7 +58,7 @@ template <class T> class CacheManager {
   }
 
   void writeToFile(string key, T obj) {                                         //write to file BINARY
-    string filename = "../" + key + typeid(obj).name();                         //build filename
+    string filename = "../" + key + obj.class_name;                             //build filename
     fstream out_file {filename,ios::out | ios::binary};                         //create file
     if(!out_file) {                                                             //check if file not created properly
       throw "an error";
@@ -84,14 +84,15 @@ template <class T> class CacheManager {
   }
 
   T getObjFromCache(string key) {
-    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.find(key);
+    typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it
+        = cacheMap.find(key);
     return it->second.first;
   }
 
   T getObjFromFile(string key) {
     typename unordered_map<string, pair<T, list<string>::iterator>>::iterator it = cacheMap.begin();
     T obj = it->second.first;
-    string filename = "../" + key + typeid(obj).name();
+    string filename = "../" + key + obj.class_name;
 
     ifstream ifile;
     ifile.open(filename, ios::in | ios::binary);
@@ -149,7 +150,7 @@ template <class T> class CacheManager {
     }
   }
 
-  CacheManager (int capacity) {                                                 //CacheManager CTOR
+  CacheManager (unsigned long capacity) {                                       //CacheManager CTOR
     this->size = capacity;
   }
 };
